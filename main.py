@@ -16,21 +16,24 @@ from collections import UserDict, UserList
 #         self.data.update(key, value)
 
 
-class Research(UserDict):
-    def __init__(self, res_name, res_date, iter_number, res_result=None):
+class Research():
+    def __init__(self, res_name, res_date, iter_number):
         self.res_name = res_name
         self.res_date = res_date
         self.iter_number = iter_number
-        self.res_result = res_result
+
+    def __repr__(self):
+        return ''.join([f'{k}: {v}' for k, v in self.__dict__.items()])
+    #def add_record(self, values: Dict[str]):
 
 
-    def add_record(self, values: List[str]):
-        self.data[values] = values
 
+class ResearchKeep(UserDict):
+    def add_entire_res(self, res: Research):
+        self.data[res.res_name] = res
 
-class Research_Keep(Research, UserDict):
-    def delete_entire_res(self, key):
-        pass
+    def delete_entire_res(self, res: Research):
+        self.data[res.res_name] = res
 
     def show_entire_avg(self, key):
         pass
@@ -38,8 +41,7 @@ class Research_Keep(Research, UserDict):
     def show_avg_by_date(self, key):
         pass
 
-#adress_book = AdressBook()
-research = Research()
+research = ResearchKeep()
 
 def unknown_command(*args):
     return 'Unknown command'
@@ -48,19 +50,21 @@ def unknown_command(*args):
 def add(*args):
     # if not args[0]:
     #     return 'Please add arguments'
-    res_info = {'res_name' : None,
-                'res_date' : None,
-                'iter_number' : None,
-                'res_result' : None}
+    res_info = {'res_name': None,
+                'res_date': None,
+                'iter_number': None}
 
     for key, value in res_info.items():
         if value is None:
             user_input = input(f'Please enter {key}')
             res_info[key] = user_input
         # Enter possible name limitations
-    return res_info
-    research.add_record(args[0])
-    return research
+    listed_args = res_info.values()
+    res = Research(listed_args)
+    research.add_entire_res(res)
+
+
+
 
 
 def get_out(*args):
@@ -106,11 +110,6 @@ def main():
         command = parser(user_input)
         if command == get_out:
             break
-
-
-
-
-
 
 
 if __name__ == '__main__':
